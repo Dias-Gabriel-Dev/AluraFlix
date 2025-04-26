@@ -5,12 +5,19 @@ const videoSchema = new mongoose.Schema({
     type: String,
     required: [true, "O título é obrigatório"],
     minlength: [3, "Mínimo 3 caracteres"],
-    maxlength: [30, 'Máximo de 30 caracteres']
+    maxlength: [30, "Máximo de 30 caracteres"]
   },
   url: {
     type: String,
-    required: true,
-    // match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, "URL inválida"]
+    required: [true, "A URL é obrigatória"],
+    immutable: true, // impede alterações após criação
+    validate: {
+      validator: function (value) {
+        const regex = /^https:\/\/[\w\-]+(\.[\w\-]+)+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/;
+        return regex.test(value);
+      },
+      message: "URL inválida — deve começar com https:// e ser bem formada"
+    }
   },
   category: {
     type: String,
@@ -18,7 +25,7 @@ const videoSchema = new mongoose.Schema({
     default: "Entretenimento"
   }
 }, {
-  timestamps: true // Adiciona createdAt e updatedAt automaticamente
+  timestamps: true
 });
 
 export default mongoose.model("Video", videoSchema);
