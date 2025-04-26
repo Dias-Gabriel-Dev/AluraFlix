@@ -9,14 +9,14 @@ const videoSchema = new mongoose.Schema({
   },
   url: {
     type: String,
-    required: [true, "A URL é obrigatória"],
-    immutable: true, // impede alterações após criação
+    required: [true, "A URL é obrigatória"], 
     validate: {
       validator: function (value) {
-        const regex = /^https:\/\/[\w\-]+(\.[\w\-]+)+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/;
+        const regex = /^(?:https?:\/\/)?(?:[\w-]+\.)+[a-zA-Z]{2,}(?:\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/i
+
         return regex.test(value);
       },
-      message: "URL inválida — deve começar com https:// e ser bem formada"
+      message: "URL inválida."
     }
   },
   category: {
