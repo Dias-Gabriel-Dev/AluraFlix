@@ -25,7 +25,7 @@ class VideoController {
         const id = req.params.id;
         const videoEncontrado = await Video.findById(id);
         res.status(201).json(videoEncontrado);
-      } catch (error) {
+      } catch (erro) {
         res.status(500).json({ message: 'Vídeo não encontrado'})
     }
   }
@@ -48,7 +48,7 @@ class VideoController {
       try {
         const videoDeletado = await Video.findByIdAndDelete(req.params.id);
         res.status(201).json({ message: 'Vídeo removido com sucesso!', video: videoDeletado })
-      } catch (error) {
+      } catch (erro) {
         res.status(400).json({ erro: 'Não foi possível remover o vídeo' });
       }
   };
