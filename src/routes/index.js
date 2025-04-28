@@ -1,5 +1,6 @@
 import express from 'express';
 import videos from './videoRoutes.js';
+import { categorias }  from '../models/Categoria.js';
 
 
 const routes = (app) => {
@@ -7,7 +8,7 @@ const routes = (app) => {
         res.status(200).send({ titulo: 'AluraFlix' });
     });
 
-    app.use('/videos', videos)
+    app.use(express.json(), videos, categorias)
 }
 
 export default routes;

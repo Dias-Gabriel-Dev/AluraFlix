@@ -19,13 +19,13 @@ const videoSchema = new mongoose.Schema({
       message: "URL inválida."
     }
   },
-  category: {
-    type: String,
-    enum: ["Educação", "Entretenimento", "Tecnologia"],
-    default: "Entretenimento"
-  }
-}, {
+  categoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true }
+}, 
+
+{
   timestamps: true
 });
 
-export default mongoose.model("video", videoSchema);
+const video = mongoose.model('video', videoSchema);
+
+export { video, videoSchema }

@@ -1,10 +1,10 @@
-import Video from "../models/Video.js";
+import { video } from "../models/Video.js";
 
 class VideoController {
 
   static async criarVideo(req, res) {
       try {
-        const novoVideo = await Video.create(req.body);
+        const novoVideo = await video.create(req.body);
         res.status(201).json({message: 'Vídeo postado com sucesso', video: novoVideo});
       } catch (erro) {
         res.status(400).json({ erro: erro.message });
@@ -13,7 +13,7 @@ class VideoController {
 
   static async ListaTodosOsVideos(req, res) {
       try {
-        const videos = await Video.find();
+        const videos = await video.find();
         res.json(videos);
       } catch (erro) {
         res.status(500).json({ erro: 'Erro interno do servidor'});
@@ -23,7 +23,7 @@ class VideoController {
   static async listarVideoPorId(req, res) {
       try {
         const id = req.params.id;
-        const videoEncontrado = await Video.findById(id);
+        const videoEncontrado = await video.findById(id);
         res.status(201).json(videoEncontrado);
       } catch (erro) {
         res.status(500).json({ message: 'Vídeo não encontrado'})
@@ -32,7 +32,7 @@ class VideoController {
 
   static async atualizarVideo(req, res) {
       try {
-        const videoAtualizado = await Video.findByIdAndUpdate(req.params.id, req.body,
+        const videoAtualizado = await video.findByIdAndUpdate(req.params.id, req.body,
           { new: true, runValidators: true }
         );
         if (!videoAtualizado) {
@@ -46,7 +46,7 @@ class VideoController {
 
   static async deletarVideo(req, res) {
       try {
-        const videoDeletado = await Video.findByIdAndDelete(req.params.id);
+        const videoDeletado = await video.findByIdAndDelete(req.params.id);
         res.status(201).json({ message: 'Vídeo removido com sucesso!', video: videoDeletado })
       } catch (erro) {
         res.status(400).json({ erro: 'Não foi possível remover o vídeo' });
