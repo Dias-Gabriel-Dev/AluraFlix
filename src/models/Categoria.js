@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 
 
 const categoriaSchema = new mongoose.Schema({
-    id: { type:mongoose.Schema.Types.ObjectId },
-    titulo: { type: String, required: true },
-    cor: {type: String, enum: cor, required: true } 
-});
+  nome: { type: String , required: true, unique: true },
+  cor: { type: String, required: true },
+  }, { timestamps: true });
 
-const categorias = mongoose.model('categoria', categoriaSchema);
+const Categoria = mongoose.model('Categoria', categoriaSchema);
 
-export { categorias, categoriaSchema }
+export default Categoria;
+
+
+
