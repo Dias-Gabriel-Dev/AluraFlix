@@ -48,8 +48,12 @@ class VideoController {
 
   static async listarVideosPorCategoriaId(req, res) {
     try {
-      const categoriaEncontradaId = await Categoria.find({ categoria: req.params.id }).populate('categoria');
-        res.status(200).json(categoriaEncontradaId);
+      const categoriaEncontradaId = await Categoria.findById(req.params.id );
+      if (!categoriaEncontradaId) {
+        return res.status(404).json({ message: 'Categoria não encontrada '});
+      }
+      const videos = await Video.find({ categoria: req.params.id }).populate('categoria');;
+        res.status(200).json(videos);
       } catch (erro) {
         res.status(500).json({ message: 'Erro ao listar vídeos por ID de categoria', erro: erro.message });
     }

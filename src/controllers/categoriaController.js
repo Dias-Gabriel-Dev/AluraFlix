@@ -52,7 +52,7 @@ class CategoriaController {
       if (!deletaCategoria) {
         return res.status(404).json({ message: 'Categoria não encontada' });
       }
-      res.status(204).send();
+      res.status(200).json({ message: 'Categoria deletada com sucesso'});
     } catch (erro) {
       res.status(500).json({ message: 'Erro ao deletar categoria', erro: erro.message });
     }
