@@ -1,13 +1,15 @@
 import express from "express";
-import { videoValidacao } from "../middlewares/validacaoVideos.js";
+import { videoValidacao } from "../middlewares/validacao.js";
 import VideoController from "../controllers/videoController.js";
 
-const router = express.Router();
+const routes = express.Router();
 
-router.get('/', VideoController.ListaTodosOsVideos);
-router.get('/:id', VideoController.listarVideoPorId);
-router.post('/', videoValidacao, VideoController.criarVideo);
-router.put('/:id', videoValidacao, VideoController.atualizarVideo);
-router.delete('/:id', VideoController.deletarVideo);
+routes.get('/videos', VideoController.listarTodosOsVideos);
+routes.get('/videos/:id', VideoController.listarVideoPorId);
+routes.get('/videos/categorias/id/:id', VideoController.listarVideosPorCategoriaId);
+routes.get('/videos/categorias/nome/:categoria', VideoController.listarVideosPorCategoria);
+routes.post('/videos', videoValidacao, VideoController.criarVideo);
+routes.put('/videos/:id', videoValidacao, VideoController.atualizarVideo);
+routes.delete('/videos/:id', VideoController.deletarVideo);
 
-export default router;
+export default routes;
