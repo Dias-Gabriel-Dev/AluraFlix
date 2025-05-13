@@ -2,8 +2,6 @@ import Video from "../models/Video.js";
 import Categoria from "../models/Categoria.js";
 import { gerarCorUnica } from "../utils/cores.js";
 
-
-
 class VideoController {
 
   static async criarVideo(req, res) {
@@ -27,7 +25,7 @@ class VideoController {
 
   static async buscarVideo(req, res) {
   try {
-    const { titulo }  = req.query;
+    const { titulo } = req.query;
 
     if (!titulo) {
       return res.status(400).json({ message: 'Parâmetros de busca inválidos. Informe pelo menos um parâmetro.' });
@@ -126,7 +124,7 @@ class VideoController {
       if (!videoDeletado) {
         return res.status(404).json({ message: 'Vídeo não encontrado' });
       }
-      res.status(204).send({ message: 'Vídeo deletado com sucesso!'});
+      res.status(204).json({ message: 'Vídeo deletado com sucesso!'});
     } catch (erro) {
       res.status(500).json({ message: 'Erro ao deletar vídeo', erro: erro.message });
     }
