@@ -25,6 +25,29 @@ class VideoController {
     }
   }
 
+  static async buscarVideo(req, res) {
+  try {
+    const { titulo }  = req.query;
+
+    if (!titulo) {
+      return res.status(400).json({ message: 'Parâmetros de busca inválidos. Informe pelo menos um parâmetro.' });
+    }
+    const filtro = {};
+    if (titulo) {
+      filtro.titulo = { $regex: titulo, $options: 'i' }; // Busca parcial no título (case insensitive)
+    }
+    
+    const videos = await Video.find(filtro).populate('categoria');
+    if (videos.length === 0) {
+      return res.status(404).json({ message: 'Nenhum vídeo encontrado.' });
+    }
+
+    res.status(200).json(videos);
+  } catch (erro) {
+    res.status(500).json({ message: 'Erro ao buscar vídeo', erro: erro.message });
+  }
+}
+
   static async listarTodosOsVideos(req, res) {
     try {
       const videos = await Video.find().populate('categoria');
