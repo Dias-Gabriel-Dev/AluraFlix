@@ -34,7 +34,7 @@ class VideoController {
     }
     const filtro = {};
     if (titulo) {
-      filtro.titulo = { $regex: titulo, $options: 'i' }; // Busca parcial no título (case insensitive)
+      filtro.titulo = { $regex: titulo, $options: 'i' };
     }
     
     const videos = await Video.find(filtro).populate('categoria');
