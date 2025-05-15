@@ -8,7 +8,7 @@ const videoSchema = new mongoose.Schema({
     validate: {
       validator : function(vld) {
         try {
-          new URL(vld);
+          const url = new URL(vld);
           return url.protocol === "http:" || url.protocol === "https:";
         } catch (_) {
           return false;
