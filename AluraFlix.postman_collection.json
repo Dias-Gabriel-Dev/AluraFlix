@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "AluraFlix API",
+    "_postman_id": "aluraflix-collection-001",
+    "description": "Coleção de testes automatizados para AluraFlix API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login (captura token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var json = pm.response.json();",
+              "    pm.environment.set('access_token', json.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{admin_username}}\",\n  \"senha\": \"{{admin_senha}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Cadastro de Aluno",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/cadastro", "host": ["{{base_url}}"], "path": ["cadastro"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"aluno1\",\n  \"senha\": \"senha123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Criar Usuário Avançado (admin/docente)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/usuarios/avancado", "host": ["{{base_url}}"], "path": ["usuarios", "avancado"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"professor1\",\n  \"senha\": \"senhaprof\",\n  \"role\": \"docente\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Listar Categorias",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": { "raw": "{{base_url}}/categorias?page=1&limit=5", "host": ["{{base_url}}"], "path": ["categorias"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+      }
+    },
+    {
+      "name": "Criar Categoria",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/categorias", "host": ["{{base_url}}"], "path": ["categorias"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Back-end\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Listar Vídeos Gratuitos (Público)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/videos/gratis?page=1&limit=5", "host": ["{{base_url}}"], "path": ["videos", "gratis"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+      }
+    },
+    {
+      "name": "Criar Vídeo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/videos", "host": ["{{base_url}}"], "path": ["videos"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"API REST com Node.js\",\n  \"descricao\": \"Aprenda a criar APIs RESTful usando Node.js.\",\n  \"url\": \"https://meusvideos.com/backend1\",\n  \"categoria\": \"ID_DA_CATEGORIA\",\n  \"tag\": [\"gratuito\"]\n}"
+        }
+      }
+    },
+    {
+      "name": "Listar Todos os Vídeos (protegido)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": { "raw": "{{base_url}}/videos?page=1&limit=5", "host": ["{{base_url}}"], "path": ["videos"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+      }
+    }
+  ],
+  "event": [],
+  "variable": []
+}

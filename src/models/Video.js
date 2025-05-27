@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const videoSchema = new mongoose.Schema({
   titulo: { type: String, required: true },
   descricao: { type: String },
@@ -17,7 +18,8 @@ const videoSchema = new mongoose.Schema({
       message: props => `${props.value} não é uma URL válida!`
     }
   },
-  categoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true}
+  categoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true},
+  tag: {type: [String], enum: ['gratuito'], message: 'Tag inválida. Use apenas tags permitidas'},
 }, { timestamps: true });
 
 const Video = mongoose.model('Video', videoSchema);
