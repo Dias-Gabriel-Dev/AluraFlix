@@ -1,0 +1,311 @@
+openapi: 3.0.0
+info:
+  title: AluraFlix API
+  version: 1.0.0
+  description: |
+    API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docente, aluno).
+    - Cadastro público só permite alunos.
+    - Criação de admin/docente apenas via endpoint protegido por admin.
+    - Autenticação JWT.
+servers:
+  - url: https://localhost:3000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        username:
+          type: string
+        senha:
+          type: string
+        role:
+          type: string
+          enum: [admin, docente, aluno]
+    Categoria:
+      type: object
+      properties:
+        nome:
+          type: string
+        cor:
+          type: string
+    Video:
+      type: object
+      properties:
+        titulo:
+          type: string
+        descricao:
+          type: string
+        url:
+          type: string
+        categoria:
+          type: string
+        tag:
+          type: array
+          items:
+            type: string
+          description: 'Exemplo: ["gratuito"]'
+
+paths:
+  /cadastro:
+    post:
+      summary: Cadastro de usuário (sempre aluno)
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+        '400':
+          description: Erro de validação
+
+  /login:
+    post:
+      summary: Login de usuário
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Token JWT retornado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Usuário e senha inválidos
+
+  /usuarios/avancado:
+    post:
+      summary: Criação de usuário admin/docente (apenas admin)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                senha:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, docente]
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+        '400':
+          description: Role inválida
+        '403':
+          description: Acesso negado
+
+  /categorias:
+    get:
+      summary: Lista categorias (paginado)
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Lista paginada de categorias
+    post:
+      summary: Cria categoria (admin/docente)
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '201':
+          description: Categoria criada
+
+  /categorias/busca:
+    get:
+      summary: Busca categorias por nome
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: nome
+          schema: { type: string }
+      responses:
+        '200':
+          description: Lista de categorias
+
+  /categorias/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Busca categoria por ID
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Categoria encontrada
+    put:
+      summary: Atualiza categoria (admin/docente)
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '200':
+          description: Categoria atualizada
+    delete:
+      summary: Deleta categoria (apenas admin)
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Categoria deletada
+
+  /videos/gratis:
+    get:
+      summary: Lista vídeos gratuitos (público, paginado)
+      tags: [Vídeos]
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Lista de vídeos gratuitos
+
+  /videos:
+    get:
+      summary: Lista todos os vídeos (paginado)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Lista paginada de vídeos
+    post:
+      summary: Cria vídeo (admin/docente)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+      responses:
+        '201':
+          description: Vídeo criado
+
+  /videos/busca:
+    get:
+      summary: Busca vídeos por título
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: titulo
+          schema: { type: string }
+      responses:
+        '200':
+          description: Lista de vídeos
+
+  /videos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Busca vídeo por ID
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Vídeo encontrado
+    put:
+      summary: Atualiza vídeo (admin/docente)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+      responses:
+        '200':
+          description: Vídeo atualizado
+    delete:
+      summary: Deleta vídeo (apenas admin)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Vídeo deletado

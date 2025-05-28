@@ -11,7 +11,7 @@ function gerarCorAleatoria() {
 
 export async function gerarCorUnica() {
     const categorias = await Categoria.find({}, 'cor');
-    const usadas = categorias.map(cat => cat.cor.toLowerCase()); // Corrigido
+    const usadas = categorias.map(cat => cat.cor.toLowerCase());
     let cor;
     do {
         cor = gerarCorAleatoria();
