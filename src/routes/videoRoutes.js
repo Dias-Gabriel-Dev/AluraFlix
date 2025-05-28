@@ -4,8 +4,9 @@ import VideoController from "../controllers/videoController.js";
 
 const routes = express.Router();
 
-routes.get('/videos', VideoController.listarTodosOsVideos);
+routes.get('/videos/busca', VideoController.buscarVideo);
 routes.get('/videos/:id', VideoController.listarVideoPorId);
+routes.get('/videos', VideoController.listarTodosOsVideos);
 routes.get('/videos/categorias/id/:id', VideoController.listarVideosPorCategoriaId);
 routes.get('/videos/categorias/nome/:categoria', VideoController.listarVideosPorCategoria);
 routes.post('/videos', videoValidacao, VideoController.criarVideo);
