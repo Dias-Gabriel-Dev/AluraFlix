@@ -1,13 +1,13 @@
 {
   "info": {
-    "name": "AluraFlix API",
-    "_postman_id": "aluraflix-collection-001",
-    "description": "Coleção de testes automatizados para AluraFlix API",
+    "name": "AluraFlix API Completa",
+    "_postman_id": "aluraflix-collection-002",
+    "description": "Coleção completa de testes automatizados para AluraFlix API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Login (captura token)",
+      "name": "Login (captura token admin)",
       "event": [
         {
           "listen": "test",
@@ -24,13 +24,11 @@
       ],
       "request": {
         "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"{{admin_username}}\",\n  \"senha\": \"{{admin_senha}}\"\n}"
+          "raw": "{\n  \"username\": \"admin\",\n  \"senha\": \"admin\"\n}"
         }
       }
     },
@@ -54,7 +52,11 @@
           { "key": "Content-Type", "value": "application/json" },
           { "key": "Authorization", "value": "Bearer {{access_token}}" }
         ],
-        "url": { "raw": "{{base_url}}/usuarios/avancado", "host": ["{{base_url}}"], "path": ["usuarios", "avancado"] },
+        "url": {
+          "raw": "{{base_url}}/usuarios/avancado",
+          "host": ["{{base_url}}"],
+          "path": ["usuarios", "avancado"]
+        },
         "body": {
           "mode": "raw",
           "raw": "{\n  \"username\": \"professor1\",\n  \"senha\": \"senhaprof\",\n  \"role\": \"docente\"\n}"
@@ -62,11 +64,67 @@
       }
     },
     {
-      "name": "Listar Categorias",
+      "name": "Listar Usuários (admin)",
       "request": {
         "method": "GET",
         "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
-        "url": { "raw": "{{base_url}}/categorias?page=1&limit=5", "host": ["{{base_url}}"], "path": ["categorias"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+        "url": { "raw": "{{base_url}}/usuarios?ativo=true", "host": ["{{base_url}}"], "path": ["usuarios"], "query": [{ "key": "ativo", "value": "true" }] }
+      }
+    },
+    {
+      "name": "Atualizar Usuário (trocar senha)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/usuarios/{{usuario_id}}", "host": ["{{base_url}}"], "path": ["usuarios", "{{usuario_id}}"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"senhaAtual\": \"senha123\",\n  \"novaSenha\": \"novaSenha456\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Inativar Usuário",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/usuarios/{{usuario_id}}/inativar", "host": ["{{base_url}}"], "path": ["usuarios", "{{usuario_id}}", "inativar"] }
+      }
+    },
+    {
+      "name": "Listar Categorias (paginado)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/categorias?page=1&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["categorias"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Categoria por Nome",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/categorias/busca?nome=Back-end",
+          "host": ["{{base_url}}"],
+          "path": ["categorias", "busca"],
+          "query": [
+            { "key": "nome", "value": "Back-end" }
+          ]
+        }
       }
     },
     {
@@ -77,23 +135,129 @@
           { "key": "Content-Type", "value": "application/json" },
           { "key": "Authorization", "value": "Bearer {{access_token}}" }
         ],
-        "url": { "raw": "{{base_url}}/categorias", "host": ["{{base_url}}"], "path": ["categorias"] },
+        "url": {
+          "raw": "{{base_url}}/categorias",
+          "host": ["{{base_url}}"],
+          "path": ["categorias"]
+        },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"nome\": \"Back-end\"\n}"
+          "raw": "{\n  \"nome\": \"Nova Categoria\"\n}"
         }
       }
     },
     {
-      "name": "Listar Vídeos Gratuitos (Público)",
+      "name": "Atualizar Categoria",
       "request": {
-        "method": "GET",
-        "header": [],
-        "url": { "raw": "{{base_url}}/videos/gratis?page=1&limit=5", "host": ["{{base_url}}"], "path": ["videos", "gratis"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/categorias/{{categoria_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["categorias", "{{categoria_id}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Categoria Atualizada\"\n}"
+        }
       }
     },
     {
-      "name": "Criar Vídeo",
+      "name": "Deletar Categoria",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/categorias/{{categoria_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["categorias", "{{categoria_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Listar Todos os Vídeos (paginado, protegido)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/videos?page=1&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["videos"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar Vídeos Gratuitos (público, paginado)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/videos/gratis?page=1&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "gratis"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Vídeo por Título",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/videos/busca?titulo=Node",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "busca"],
+          "query": [
+            { "key": "titulo", "value": "Node" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar Vídeos por Categoria (ID)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/videos/categorias/id/{{categoria_id}}?page=1&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "categorias", "id", "{{categoria_id}}"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar Vídeos por Categoria (nome)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/videos/categorias/nome/Back-end?page=1&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "categorias", "nome", "Back-end"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Criar Vídeo (categoria nome)",
       "request": {
         "method": "POST",
         "header": [
@@ -103,16 +267,61 @@
         "url": { "raw": "{{base_url}}/videos", "host": ["{{base_url}}"], "path": ["videos"] },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"titulo\": \"API REST com Node.js\",\n  \"descricao\": \"Aprenda a criar APIs RESTful usando Node.js.\",\n  \"url\": \"https://meusvideos.com/backend1\",\n  \"categoria\": \"ID_DA_CATEGORIA\",\n  \"tag\": [\"gratuito\"]\n}"
+          "raw": "{\n  \"titulo\": \"Novo vídeo Node\",\n  \"descricao\": \"Teste de vídeo com categoria nome\",\n  \"url\": \"https://meusvideos.com/testenode\",\n  \"categoria\": \"Back-end\",\n  \"tags\": []\n}"
         }
       }
     },
     {
-      "name": "Listar Todos os Vídeos (protegido)",
+      "name": "Criar Vídeo (categoria vazia, vai para Livre)",
       "request": {
-        "method": "GET",
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/videos", "host": ["{{base_url}}"], "path": ["videos"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Vídeo sem categoria\",\n  \"descricao\": \"Deve cair na categoria Livre\",\n  \"url\": \"https://meusvideos.com/livre\",\n  \"categoria\": \"\",\n  \"tags\": []\n}"
+        }
+      }
+    },
+    {
+      "name": "Criar Vídeo Gratuito",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/videos", "host": ["{{base_url}}"], "path": ["videos"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Vídeo Gratuito\",\n  \"descricao\": \"Este vídeo deve aparecer em /videos/gratis\",\n  \"url\": \"https://meusvideos.com/gratuito\",\n  \"categoria\": \"Front-end\",\n  \"tags\": [\"gratuito\"]\n}"
+        }
+      }
+    },
+    {
+      "name": "Atualizar Vídeo",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/videos/{{video_id}}", "host": ["{{base_url}}"], "path": ["videos", "{{video_id}}"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Vídeo Atualizado\",\n  \"descricao\": \"Descrição atualizada\",\n  \"url\": \"https://meusvideos.com/atualizado\",\n  \"categoria\": \"DevOps\",\n  \"tags\": []\n}"
+        }
+      }
+    },
+    {
+      "name": "Deletar Vídeo",
+      "request": {
+        "method": "DELETE",
         "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
-        "url": { "raw": "{{base_url}}/videos?page=1&limit=5", "host": ["{{base_url}}"], "path": ["videos"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] }
+        "url": { "raw": "{{base_url}}/videos/{{video_id}}", "host": ["{{base_url}}"], "path": ["videos", "{{video_id}}"] }
       }
     }
   ],

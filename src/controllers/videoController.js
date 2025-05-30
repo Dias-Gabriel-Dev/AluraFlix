@@ -1,7 +1,7 @@
-import Video from "../models/Video.js";
-import Categoria from "../models/Categoria.js";
-import { gerarCorUnica } from "../utils/cores.js";
-import { paginacao } from "../utils/paginacao.js";
+import Video from '../models/Video.js';
+import Categoria from '../models/Categoria.js';
+import { gerarCorUnica } from '../utils/cores.js';
+import { paginacao } from '../utils/paginacao.js';
 
 class VideoController {
   static async criarVideo(req, res) {
@@ -27,7 +27,9 @@ class VideoController {
     try {
       const { titulo } = req.query;
       if (!titulo) {
-        return res.status(400).json({ message: 'Parâmetros de busca inválidos. Informe pelo menos um parâmetro.' });
+        return res
+          .status(400)
+          .json({ message: 'Parâmetros de busca inválidos. Informe pelo menos um parâmetro.' });
       }
 
       const { pagina, limite, proximaPagina } = paginacao(req.query);
@@ -131,7 +133,9 @@ class VideoController {
       };
       res.status(200).json({ videos, paginacao: infoPaginacao });
     } catch (erro) {
-      res.status(500).json({ message: 'Erro ao listar vídeos por ID de categoria', erro: erro.message });
+      res
+        .status(500)
+        .json({ message: 'Erro ao listar vídeos por ID de categoria', erro: erro.message });
     }
   }
 
@@ -173,19 +177,19 @@ class VideoController {
   static async listarVideosGratis(req, res) {
     try {
       const { pagina, limite, proximaPagina } = paginacao(req.query);
-      const filtro = { tag: 'gratuito'};
+      const filtro = { tags: 'gratuito' };
 
       const totalVideos = await Video.countDocuments(filtro);
       const totalPaginas = Math.ceil(totalVideos / limite);
 
-      if(pagina > totalPaginas && totalVideos > 0) {
+      if (pagina > totalPaginas && totalVideos > 0) {
         return res.status(404).json({ message: 'Página não encontrada', totalPaginas });
       }
       const videos = await Video.find(filtro)
-      .skip(proximaPagina)
-      .limit(limite)
-      .populate('categoria')
-      .sort({ createdAt: - 1 });
+        .skip(proximaPagina)
+        .limit(limite)
+        .populate('categoria')
+        .sort({ createdAt: -1 });
 
       const infoPaginacao = {
         paginaAtual: pagina,
@@ -235,7 +239,7 @@ class VideoController {
       if (!videoDeletado) {
         return res.status(404).json({ message: 'Vídeo não encontrado' });
       }
-      res.status(200).json({ message: 'Vídeo deletado com sucesso'});
+      res.status(200).json({ message: 'Vídeo deletado com sucesso' });
     } catch (erro) {
       res.status(500).json({ message: 'Erro ao deletar vídeo', erro: erro.message });
     }
