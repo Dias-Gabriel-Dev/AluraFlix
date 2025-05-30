@@ -49,3 +49,14 @@ export const criarUsuarioAvancado = async (req, res) => {
         res.status(400).json({ message: erro.message });
     }
 };
+
+// export const logOut = async (req, res) => {
+//     const { username } = req.body;
+//     try {
+//         const user = await User.findOne({ username });
+//         user.sessionToken = null;
+//         await user.save();
+//         res.status(200).json({ message: 'Logout realizado com sucesso' });
+//     } catch (erro) {
+//         console.error(erro);
+//         res.status(500).json({ message: 'Erro ao realizar logout' });
