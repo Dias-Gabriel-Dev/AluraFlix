@@ -159,5 +159,9 @@ text
 ## 🧑‍💻 Contribua
 
 Pull requests são bem-vindos! Para sugestões, abra uma issue.
+---
 
+## 🏷️ Licença
+
+[MIT](LICENSE)
 
