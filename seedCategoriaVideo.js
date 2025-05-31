@@ -73,7 +73,10 @@ async function seedCategoriasVideos() {
     }
 
     console.log('Total de vídeos criados:', todosVideos.length);
-    console.log('Total de vídeos gratuitos:', todosVideos.filter(v => v.tags.includes('gratuito')).length);
+    console.log(
+      'Total de vídeos gratuitos:',
+      todosVideos.filter((v) => v.tags.includes('gratuito')).length
+    );
 
     await mongoose.connection.close();
     console.log('Seed concluído com sucesso!');
@@ -84,4 +87,3 @@ async function seedCategoriasVideos() {
 }
 
 seedCategoriasVideos();
-

@@ -88,6 +88,8 @@ paths:
                     type: string
         '401':
           description: Usuário e senha inválidos
+        '403':
+          description: Usuário inativado, por favor entre em contato com um de nossos colaboradores.
 
   /usuarios/avancado:
     post:
@@ -152,6 +154,28 @@ paths:
       responses:
         '200':
           description: Usuário inativado
+
+  /usuarios/{id}/reativar:
+    patch:
+      summary: Reativa usuário (admin ou próprio usuário)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuário reativado com sucesso
+        '403':
+          description: Acesso negado
+        '404':
+          description: Usuário não encontrado
+        '400':
+          description: Usuário já está ativo
 
   /categorias:
     get:
@@ -224,7 +248,7 @@ paths:
 
   /categorias/busca:
     get:
-      summary: Busca categorias por nome
+      summary: Busca categorias por nome (não diferencia acentuação)
       tags: [Categorias]
       security:
         - bearerAuth: []
@@ -322,7 +346,7 @@ paths:
 
   /videos/busca:
     get:
-      summary: Busca vídeos por título
+      summary: Busca vídeos por título (não diferencia acentuação)
       tags: [Vídeos]
       security:
         - bearerAuth: []

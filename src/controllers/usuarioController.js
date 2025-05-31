@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET;
 
 class UsuarioController {
-  // Cadastro público (sempre aluno)
   static async cadastrar(req, res) {
     try {
       const { username, senha } = req.body;
@@ -19,12 +18,16 @@ class UsuarioController {
     }
   }
 
-  // Login
   static async login(req, res) {
     try {
       const { username, senha } = req.body;
       const usuario = await Usuario.findOne({ username, ativo: true });
       if (!usuario) return res.status(401).json({ message: 'Usuário e senha inválido' });
+      if (!usuario.ativo) {
+        return res.status(401).json({
+          message: 'Usuário inativado, por favor entre em contato com um de nossos colaboradores.'
+        });
+      }
       const senhaCorreta = await usuario.compararSenha(senha);
       if (!senhaCorreta) return res.status(401).json({ message: 'Usuário e senha inválido' });
       const token = jwt.sign(
@@ -38,7 +41,6 @@ class UsuarioController {
     }
   }
 
-  // Criar usuário avançado (admin/docente)
   static async criarUsuarioAvancado(req, res) {
     try {
       const { username, senha, role } = req.body;
@@ -54,7 +56,6 @@ class UsuarioController {
     }
   }
 
-  // Atualizar usuário (próprio ou admin)
   static async atualizarUsuario(req, res) {
     try {
       const { id } = req.params;
@@ -80,7 +81,6 @@ class UsuarioController {
     }
   }
 
-  // Inativar usuário (soft delete)
   static async inativarUsuario(req, res) {
     try {
       const { id } = req.params;
@@ -96,7 +96,23 @@ class UsuarioController {
     }
   }
 
-  // Listar usuários com filtro por ativo/inativo (apenas admin)
+  static async reativarUsuario(req, res) {
+    try {
+      const { id } = req.params;
+      if (req.usuario.role !== 'admin') return res.status(403).json({ message: 'Acesso negado.' });
+      const usuario = await Usuario.findById(id);
+      if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado.' });
+      if (usuario.ativo) {
+        return res.status(400).json({ message: 'Usuário já está ativo.' });
+      }
+      usuario.ativo = true;
+      await usuario.save();
+      res.status(200).json({ message: 'Usuário reativado com sucesso.' });
+    } catch (erro) {
+      res.status(400).json({ message: erro.message });
+    }
+  }
+
   static async listarUsuarios(req, res) {
     try {
       if (req.usuario.role !== 'admin') return res.status(403).json({ message: 'Acesso negado.' });
@@ -106,6 +122,18 @@ class UsuarioController {
       const usuarios = await Usuario.find(filtro).select('-senha');
       res.status(200).json(usuarios);
     } catch (erro) {
+      res.status(400).json({ message: erro.message });
+    }
+  }
+
+  static async logout(req, res) {
+    const { username } = req.body;
+    try {
+      const user = await Usuario.findOne({ username });
+      await user.save();
+      res.status(200).json({ message: 'Logout realizado com sucesso' });
+    } catch (erro) {
+      console.error(erro);
       res.status(400).json({ message: erro.message });
     }
   }

@@ -2,6 +2,7 @@ import Video from '../models/Video.js';
 import Categoria from '../models/Categoria.js';
 import { gerarCorUnica } from '../utils/cores.js';
 import { paginacao } from '../utils/paginacao.js';
+import { semAcentoNaBusca } from '../utils/buscaSemAcento.js';
 
 class VideoController {
   static async criarVideo(req, res) {
@@ -33,7 +34,8 @@ class VideoController {
       }
 
       const { pagina, limite, proximaPagina } = paginacao(req.query);
-      const filtro = { titulo: { $regex: titulo, $options: 'i' } };
+      const regex = semAcentoNaBusca(titulo)
+      const filtro = { titulo: { $regex: regex, $options: 'i' } };
       const totalVideos = await Video.countDocuments(filtro);
       if (totalVideos === 0) {
         return res.status(404).json({ message: 'Nenhum vídeo encontrado.' });

@@ -68,7 +68,12 @@
       "request": {
         "method": "GET",
         "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
-        "url": { "raw": "{{base_url}}/usuarios?ativo=true", "host": ["{{base_url}}"], "path": ["usuarios"], "query": [{ "key": "ativo", "value": "true" }] }
+        "url": {
+          "raw": "{{base_url}}/usuarios?ativo=true",
+          "host": ["{{base_url}}"],
+          "path": ["usuarios"],
+          "query": [{ "key": "ativo", "value": "true" }]
+        }
       }
     },
     {
@@ -79,7 +84,11 @@
           { "key": "Content-Type", "value": "application/json" },
           { "key": "Authorization", "value": "Bearer {{access_token}}" }
         ],
-        "url": { "raw": "{{base_url}}/usuarios/{{usuario_id}}", "host": ["{{base_url}}"], "path": ["usuarios", "{{usuario_id}}"] },
+        "url": {
+          "raw": "{{base_url}}/usuarios/{{usuario_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["usuarios", "{{usuario_id}}"]
+        },
         "body": {
           "mode": "raw",
           "raw": "{\n  \"senhaAtual\": \"senha123\",\n  \"novaSenha\": \"novaSenha456\"\n}"
@@ -90,11 +99,51 @@
       "name": "Inativar Usuário",
       "request": {
         "method": "PATCH",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{access_token}}" }
-        ],
-        "url": { "raw": "{{base_url}}/usuarios/{{usuario_id}}/inativar", "host": ["{{base_url}}"], "path": ["usuarios", "{{usuario_id}}", "inativar"] }
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/usuarios/{{usuario_id}}/inativar",
+          "host": ["{{base_url}}"],
+          "path": ["usuarios", "{{usuario_id}}", "inativar"]
+        }
       }
+    },
+    {
+      "name": "Reativar Usuário",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+        "url": {
+          "raw": "{{base_url}}/usuarios/{{usuario_id}}/reativar",
+          "host": ["{{base_url}}"],
+          "path": ["usuarios", "{{usuario_id}}", "reativar"]
+        }
+      }
+    },
+    {
+      "name": "Login usuário inativado (deve falhar)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"aluno1\",\n  \"senha\": \"senha123\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Usuário inativado', function () {",
+              "  pm.response.to.have.status(403);",
+              "  pm.expect(pm.response.json().message).to.include('inativado');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
     },
     {
       "name": "Listar Categorias (paginado)",
@@ -121,9 +170,7 @@
           "raw": "{{base_url}}/categorias/busca?nome=Back-end",
           "host": ["{{base_url}}"],
           "path": ["categorias", "busca"],
-          "query": [
-            { "key": "nome", "value": "Back-end" }
-          ]
+          "query": [{ "key": "nome", "value": "Back-end" }]
         }
       }
     },
@@ -218,9 +265,7 @@
           "raw": "{{base_url}}/videos/busca?titulo=Node",
           "host": ["{{base_url}}"],
           "path": ["videos", "busca"],
-          "query": [
-            { "key": "titulo", "value": "Node" }
-          ]
+          "query": [{ "key": "titulo", "value": "Node" }]
         }
       }
     },
@@ -309,7 +354,11 @@
           { "key": "Content-Type", "value": "application/json" },
           { "key": "Authorization", "value": "Bearer {{access_token}}" }
         ],
-        "url": { "raw": "{{base_url}}/videos/{{video_id}}", "host": ["{{base_url}}"], "path": ["videos", "{{video_id}}"] },
+        "url": {
+          "raw": "{{base_url}}/videos/{{video_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "{{video_id}}"]
+        },
         "body": {
           "mode": "raw",
           "raw": "{\n  \"titulo\": \"Vídeo Atualizado\",\n  \"descricao\": \"Descrição atualizada\",\n  \"url\": \"https://meusvideos.com/atualizado\",\n  \"categoria\": \"DevOps\",\n  \"tags\": []\n}"
@@ -321,7 +370,11 @@
       "request": {
         "method": "DELETE",
         "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
-        "url": { "raw": "{{base_url}}/videos/{{video_id}}", "host": ["{{base_url}}"], "path": ["videos", "{{video_id}}"] }
+        "url": {
+          "raw": "{{base_url}}/videos/{{video_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["videos", "{{video_id}}"]
+        }
       }
     }
   ],

@@ -20,20 +20,20 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 ## 📦 Como rodar localmente
 
 1. Clone o repositório
-1. Instale as dependências:
-1. Crie um arquivo `.env` na raiz com:
+2. Instale as dependências:
+   npm install
 
-- DB_connection_STRING=mongodb://127.0.0.1:27017/aluraflix
-- JWT_SECRET=sua_chave_secreta
+text 3. Crie um arquivo `.env` na raiz com:
+DB_connection_STRING=mongodb://127.0.0.1:27017/aluraflix
+JWT_SECRET=sua_chave_secreta
 
-1. Inicie o servidor:
+text 4. Inicie o servidor:
+npm start
 
-   - npm start
+text 5. Acesse:
 
-1. Acesse:
-
-   - [Documentação Swagger](http://localhost:3000/api-docs)
-   - Importe a [Coleção Postman](#colecao-postman) para testar
+- [Documentação Swagger](http://localhost:3000/api-docs)
+- Importe a [Coleção Postman](#colecao-postman) para testar
 
 ---
 
@@ -47,13 +47,14 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 - `GET /usuarios?ativo=true|false` — Lista usuários (apenas admin, filtro ativo/inativo)
 - `PUT /usuarios/:id` — Atualiza usuário (próprio ou admin)
 - `PATCH /usuarios/:id/inativar` — Inativa usuário (soft delete, próprio ou admin)
+- `PATCH /usuarios/:id/reativar` — Reativa usuário (somente admin)
 
 ### Categorias
 
 - `POST /categorias` — Cria categoria (admin/docente)
 - `GET /categorias` — Lista categorias (paginado)
 - `GET /categorias/:id` — Detalha categoria por ID
-- `GET /categorias/busca?nome=...` — Busca por nome
+- `GET /categorias/busca?nome=...` — Busca por nome (sem acento)
 - `PUT /categorias/:id` — Atualiza categoria (admin/docente)
 - `DELETE /categorias/:id` — Deleta categoria (apenas admin)
 
@@ -63,7 +64,7 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 - `GET /videos` — Lista vídeos (paginado)
 - `GET /videos/gratis` — Lista vídeos gratuitos (público, paginado)
 - `GET /videos/:id` — Detalha vídeo por ID
-- `GET /videos/busca?titulo=...` — Busca por título
+- `GET /videos/busca?titulo=...` — Busca por título (sem acento)
 - `GET /videos/categorias/id/:id` — Lista vídeos por categoria (ID)
 - `GET /videos/categorias/nome/:categoria` — Lista vídeos por categoria (nome)
 - `PUT /videos/:id` — Atualiza vídeo (admin/docente)
@@ -80,12 +81,16 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 "senha": "senha123"
 }
 
+text
+
 ### Login
 
 {
 "username": "aluno1",
 "senha": "senha123"
 }
+
+text
 
 ### Cadastro de usuário avançado (admin/docente)
 
@@ -95,15 +100,28 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 "role": "docente"
 }
 
+text
+
 ### Criação de vídeo
 
 {
 "titulo": "API REST com Node.js",
 "descricao": "Aprenda a criar APIs RESTful usando Node.js.",
-"url": "<https://meusvideos.com/backend1>",
-"categoria": "ID_DA_CATEGORIA ou NOME_DA_CATEGORIA_A_SER_ADICIONADA_NA_COLEÇÃO (se esse campo ficar em branco será atribuido 'Livre' automaticamente)",
-"tags": ["gratuito"] (Use a tag gratuito somente para atribuir o video à rota pública)
+"url": "https://meusvideos.com/backend1",
+"categoria": "ID_DA_CATEGORIA ou NOME_DA_CATEGORIA (se ficar em branco será atribuído 'Livre')",
+"tags": ["gratuito"]
 }
+
+text
+
+### Atualização de usuário (trocar senha)
+
+{
+"senhaAtual": "senhaantiga",
+"novaSenha": "senhanova"
+}
+
+text
 
 ---
 
@@ -111,13 +129,16 @@ API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docent
 
 - Todos os GETs de listagem aceitam `?page=1&limit=5`
 - Filtro de usuários ativos/inativos: `GET /usuarios?ativo=true` ou `?ativo=false`
+- Busca por nome/título: não diferencia acentuação
 
 ---
 
 ## 🔒 Autenticação
 
 - Use o token JWT retornado no login no header:
-- Authorization: Bearer SEU_TOKEN_AQUI
+  Authorization: Bearer SEU_TOKEN_AQUI
+
+text
 
 ---
 

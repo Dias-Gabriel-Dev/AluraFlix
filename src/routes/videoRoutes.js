@@ -4,7 +4,6 @@ import VideoController from '../controllers/videoController.js';
 import { autenticarJWT } from '../middlewares/auth.js';
 import { roleAutorizada } from '../middlewares/roleAutorizada.js';
 
-
 const routes = express.Router();
 
 routes.get('/videos/gratis', VideoController.listarVideosGratis);

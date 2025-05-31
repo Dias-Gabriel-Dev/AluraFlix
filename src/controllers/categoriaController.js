@@ -1,6 +1,7 @@
 import Categoria from '../models/Categoria.js';
 import { gerarCorUnica } from '../utils/cores.js';
 import { paginacao } from '../utils/paginacao.js';
+import { semAcentoNaBusca } from '../utils/buscaSemAcento.js';
 
 class CategoriaController {
   static async criarCategoria(req, res) {
@@ -23,7 +24,8 @@ class CategoriaController {
       }
 
       const { pagina, limite, proximaPagina } = paginacao(req.query);
-      const filtro = { nome: { $regex: nome, $options: 'i' } };
+      const regex = semAcentoNaBusca(nome);
+      const filtro = { nome: { $regex: regex, $options: 'i' } };
       const totalCategorias = await Categoria.countDocuments(filtro);
       if (totalCategorias === 0) {
         return res.status(404).json({ message: 'Nenhuma categoria encontrada.' });
