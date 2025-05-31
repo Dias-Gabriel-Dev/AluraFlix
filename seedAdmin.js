@@ -5,16 +5,13 @@ import 'dotenv/config';
 
 async function seedAdmin() {
   try {
-    // Conecta ao banco
-    await conectaDataBase(); // <--- Chamada correta da função
+    await conectaDataBase();
 
-    // Apaga todos os usuários
     await mongoose.connection.db.collection('usuarios').deleteMany({});
 
-    // Cria o admin
     const adminUser = new Usuario({
       username: 'admin',
-      senha: 'admin', // Senha em texto puro (o pre('save') faz o hash)
+      senha: 'admin', 
       role: 'admin',
       ativo: true
     });
