@@ -1,26 +1,33 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-
-const videoSchema = new mongoose.Schema({
-  titulo: { type: String, required: true },
-  descricao: { type: String },
-  url: { type: String,
-    required: true,
-    validate: {
-      validator : function(vld) {
-        try {
-          const url = new URL(vld);
-          return url.protocol === "http:" || url.protocol === "https:";
-        } catch (_) {
-          return false;
-        }
-      },
-      message: props => `${props.value} não é uma URL válida!`
+const videoSchema = new mongoose.Schema(
+  {
+    titulo: { type: String, required: true },
+    descricao: { type: String },
+    url: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function (vld) {
+          try {
+            const url = new URL(vld);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+          } catch (_) {
+            return false;
+          }
+        },
+        message: (props) => `${props.value} não é uma URL válida!`
+      }
+    },
+    categoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true },
+    tags: {
+      type: [String],
+      enum: ['gratuito'],
+      message: 'Tag inválida. Use apenas tags permitidas'
     }
   },
-  categoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true},
-  tag: {type: [String], enum: ['gratuito'], message: 'Tag inválida. Use apenas tags permitidas'},
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 const Video = mongoose.model('Video', videoSchema);
 

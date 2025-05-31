@@ -2,13 +2,9 @@ openapi: 3.0.0
 info:
   title: AluraFlix API
   version: 1.0.0
-  description: |
-    API RESTful para gerenciamento de vídeos, categorias e usuários (admin, docente, aluno).
-    - Cadastro público só permite alunos.
-    - Criação de admin/docente apenas via endpoint protegido por admin.
-    - Autenticação JWT.
+  description: API RESTful para vídeos, categorias e usuários (admin, docente, aluno)
 servers:
-  - url: https://localhost:3000
+  - url: http://localhost:3000
 
 components:
   securitySchemes:
@@ -27,6 +23,8 @@ components:
         role:
           type: string
           enum: [admin, docente, aluno]
+        ativo:
+          type: boolean
     Categoria:
       type: object
       properties:
@@ -45,7 +43,7 @@ components:
           type: string
         categoria:
           type: string
-        tag:
+        tags:
           type: array
           items:
             type: string
@@ -55,18 +53,13 @@ paths:
   /cadastro:
     post:
       summary: Cadastro de usuário (sempre aluno)
-      tags: [Autenticação]
+      tags: [Usuários]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                senha:
-                  type: string
+              $ref: '#/components/schemas/Usuario'
       responses:
         '201':
           description: Usuário criado com sucesso
@@ -76,18 +69,13 @@ paths:
   /login:
     post:
       summary: Login de usuário
-      tags: [Autenticação]
+      tags: [Usuários]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                senha:
-                  type: string
+              $ref: '#/components/schemas/Usuario'
       responses:
         '200':
           description: Token JWT retornado
@@ -100,6 +88,8 @@ paths:
                     type: string
         '401':
           description: Usuário e senha inválidos
+        '403':
+          description: Usuário inativado, por favor entre em contato com um de nossos colaboradores.
 
   /usuarios/avancado:
     post:
@@ -112,15 +102,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                senha:
-                  type: string
-                role:
-                  type: string
-                  enum: [admin, docente]
+              $ref: '#/components/schemas/Usuario'
       responses:
         '201':
           description: Usuário criado com sucesso
@@ -128,6 +110,72 @@ paths:
           description: Role inválida
         '403':
           description: Acesso negado
+
+  /usuarios:
+    get:
+      summary: Lista usuários (apenas admin, filtro ativo/inativo)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: ativo
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Lista de usuários
+
+  /usuarios/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Atualiza usuário (próprio ou admin)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: Usuário atualizado
+    patch:
+      summary: Inativa usuário (soft delete, próprio ou admin)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Usuário inativado
+
+  /usuarios/{id}/reativar:
+    patch:
+      summary: Reativa usuário (admin ou próprio usuário)
+      tags: [Usuários]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuário reativado com sucesso
+        '403':
+          description: Acesso negado
+        '404':
+          description: Usuário não encontrado
+        '400':
+          description: Usuário já está ativo
 
   /categorias:
     get:
@@ -159,20 +207,6 @@ paths:
       responses:
         '201':
           description: Categoria criada
-
-  /categorias/busca:
-    get:
-      summary: Busca categorias por nome
-      tags: [Categorias]
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: nome
-          schema: { type: string }
-      responses:
-        '200':
-          description: Lista de categorias
 
   /categorias/{id}:
     parameters:
@@ -212,24 +246,23 @@ paths:
         '200':
           description: Categoria deletada
 
-  /videos/gratis:
+  /categorias/busca:
     get:
-      summary: Lista vídeos gratuitos (público, paginado)
-      tags: [Vídeos]
+      summary: Busca categorias por nome (não diferencia acentuação)
+      tags: [Categorias]
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
-          name: page
-          schema: { type: integer }
-        - in: query
-          name: limit
-          schema: { type: integer }
+          name: nome
+          schema: { type: string }
       responses:
         '200':
-          description: Lista de vídeos gratuitos
+          description: Lista de categorias
 
   /videos:
     get:
-      summary: Lista todos os vídeos (paginado)
+      summary: Lista vídeos (paginado)
       tags: [Vídeos]
       security:
         - bearerAuth: []
@@ -258,19 +291,20 @@ paths:
         '201':
           description: Vídeo criado
 
-  /videos/busca:
+  /videos/gratis:
     get:
-      summary: Busca vídeos por título
+      summary: Lista vídeos gratuitos (público, paginado)
       tags: [Vídeos]
-      security:
-        - bearerAuth: []
       parameters:
         - in: query
-          name: titulo
-          schema: { type: string }
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
       responses:
         '200':
-          description: Lista de vídeos
+          description: Lista de vídeos gratuitos
 
   /videos/{id}:
     parameters:
@@ -309,3 +343,49 @@ paths:
       responses:
         '200':
           description: Vídeo deletado
+
+  /videos/busca:
+    get:
+      summary: Busca vídeos por título (não diferencia acentuação)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: titulo
+          schema: { type: string }
+      responses:
+        '200':
+          description: Lista de vídeos
+
+  /videos/categorias/id/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Lista vídeos por categoria (ID)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de vídeos
+
+  /videos/categorias/nome/{categoria}:
+    parameters:
+      - name: categoria
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Lista vídeos por categoria (nome)
+      tags: [Vídeos]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de vídeos
