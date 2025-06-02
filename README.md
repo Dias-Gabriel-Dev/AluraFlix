@@ -151,7 +151,7 @@ text
 
 ## 🤝 Contato
 
-- [Seu LinkedIn](https://www.linkedin.com/in/gabriel-henrique-dos-santos-dias-7b5b61346/)
+- [LinkedIn](https://www.linkedin.com/in/gabriel-henrique-dos-santos-dias-7b5b61346/)
 - Email: <gabriel.henrique.dias@outlook.com>
 
 ---
